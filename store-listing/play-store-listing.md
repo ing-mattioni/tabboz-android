@@ -84,6 +84,17 @@ https://ing-mattioni.github.io/tabboz-android/privacy.html
 ing.mattioni@libero.it
 ```
 
+## Icona ad alta risoluzione e feature graphic
+
+- `icon-512.png` - icona 512x512, PNG a 32 bit con alpha, per la scheda dello
+  store. Riprende esattamente l'icona originale del gioco (lo scooter
+  rosso), la stessa gia' usata come icona dell'app installata, su sfondo
+  teal come da linee guida (icona coerente con quella in-app).
+- `feature-graphic.png` - banner 1024x500, PNG RGB senza alpha, per la
+  promozione della scheda. Riprende la barra del titolo in stile Windows 98
+  dell'app con il nome del gioco, il personaggio del tabbozzo (composto
+  dagli sprite originali del gioco) e una breve tagline.
+
 ## Screenshot
 
 Sette screenshot pronti in `store-listing/screenshots/` (1080x1920, PNG RGB
