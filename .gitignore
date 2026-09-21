@@ -10,3 +10,9 @@
 
 # Artefatti di build
 /dist/*debug*.apk
+
+# Chiave di firma per il Play Store: NON versionare mai la keystore o le password.
+/keystore.properties
+/keystore/
+*.keystore
+*.jks

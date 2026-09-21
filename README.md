@@ -37,16 +37,41 @@ Requisiti: JDK 17+ (va bene quello incluso in Android Studio), Android SDK con p
 # Windows (PowerShell)
 $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 .\gradlew.bat assembleDebug        # APK di debug
-.\gradlew.bat assembleRelease      # APK release (firmato con la chiave di debug)
+.\gradlew.bat assembleRelease      # APK release
+.\gradlew.bat bundleRelease        # AAB release (per il Play Store)
 ```
 
-Gli APK vengono generati in `app/build/outputs/apk/`. Installazione su un dispositivo collegato:
+Senza una chiave di release configurata (vedi sotto), le build `*Release` ricadono sulla chiave di
+debug: restano installabili ma non caricabili sul Play Store. Gli artefatti vengono generati in
+`app/build/outputs/apk/` e `app/build/outputs/bundle/`. Installazione su un dispositivo collegato:
 
 ```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
 In alternativa aprire la cartella `android` con Android Studio.
+
+### Chiave di firma per la release (Play Store)
+
+La build release e' firmata da una chiave locale, non versionata, letta da un file
+`keystore.properties` nella radice del progetto (vedi `.gitignore`: `keystore/` e
+`keystore.properties` non vengono mai committati). Per generarne una nuova:
+
+```bash
+keytool -genkeypair -v -keystore keystore/tabboz-release.keystore -alias tabboz-release   -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Nome Cognome, OU=Tabboz Simulator, O=..., C=IT"
+```
+
+poi creare `keystore.properties`:
+
+```properties
+storeFile=keystore/tabboz-release.keystore
+storePassword=...
+keyAlias=tabboz-release
+keyPassword=...
+```
+
+**Conserva la keystore e le password in un posto sicuro (es. password manager) fuori dal
+repository**: perderle impedisce di pubblicare aggiornamenti della stessa app sul Play Store.
 
 ## Rigenerare gli asset
 
@@ -70,10 +95,26 @@ python tools/convert_resources.py --src ../tabboz-main
 - Il pulsante nascosto "Reset" della finestra Configuration e' stato reso visibile per poter iniziare
   una nuova partita (scelta del sesso del tabbozzo).
 
-## APK
+## APK / AAB
 
-Una build pronta (firmata con la chiave di debug, quindi installabile ma non pubblicabile sul Play Store)
-e' in `dist/TabbozSimulator-release.apk`.
+Build pronte in `dist/`:
+- `TabbozSimulator-release.apk` &mdash; installabile direttamente su un telefono (`adb install`).
+- `TabbozSimulator-release.aab` &mdash; Android App Bundle da caricare su Google Play Console.
+
+Entrambe sono firmate con la chiave di release del progetto (non con quella di debug).
+
+## Pubblicazione sul Play Store
+
+Oltre all'AAB firmato, per pubblicare serve autonomamente:
+- un account [Google Play Console](https://play.google.com/console/) (a pagamento una tantum);
+- l'URL di una privacy policy pubblica: quella di questo progetto e' in
+  [`docs/privacy.html`](docs/privacy.html), pubblicata via GitHub Pages;
+- il questionario IARC per il content rating (probabile Adolescenti/Maturo 17+ per riferimenti a
+  fumo, alcol, risse e linguaggio scurrile presenti nel gioco originale);
+- scheda del Play Store (descrizione, screenshot, icona), con menzione degli autori originali.
+
+Essendo il gioco GPL 3, distribuendo l'app (anche gratuitamente) sei tenuto a rendere disponibile il
+codice sorgente a chi la scarica: per questo il repository e' pubblico.
 
 ## Licenza
 
