@@ -94,6 +94,11 @@ python tools/convert_resources.py --src ../tabboz-main
 - La funzione "Apri/Salva con nome" (file .tbz) non e' disponibile, come nella versione web.
 - Il pulsante nascosto "Reset" della finestra Configuration e' stato reso visibile per poter iniziare
   una nuova partita (scelta del sesso del tabbozzo).
+- Per rispettare le norme di Google Play sui contenuti sessuali, l'immagine della "tipa al mare"
+  (bitmap 1206, con nudita' parziale) e' sostituita dall'immagine normale della tipa vestita, e la
+  sua variante sbiadita inutilizzata (1207) non viene inclusa. La sostituzione avviene in
+  `tools/convert_resources.py`.
+- Nel menu Help c'e' la voce "Informativa sulla privacy...", richiesta da Google Play.
 
 ## APK / AAB
 

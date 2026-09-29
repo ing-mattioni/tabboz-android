@@ -276,6 +276,14 @@ def main() -> None:
         n += 1
     print(f"bitmap: {n}")
 
+    # Norme di Google Play sui contenuti sessuali: l'immagine originale della "tipa al mare" (1206)
+    # contiene nudita' parziale in posa allusiva. Nella versione Android viene sostituita con
+    # l'immagine normale della tipa vestita (1204, stessa posa). La 1207 e' una variante sbiadita
+    # della stessa immagine, non usata dal gioco: viene esclusa dall'APK.
+    shutil.copy(bdir / "1204.png", bdir / "1206.png")
+    (bdir / "1207.png").unlink(missing_ok=True)
+    print("bitmap 1206 sostituita con 1204, bitmap 1207 rimossa (norme Google Play)")
+
     # --- icone ---
     idir = ASSETS / "icons"
     idir.mkdir(parents=True, exist_ok=True)
