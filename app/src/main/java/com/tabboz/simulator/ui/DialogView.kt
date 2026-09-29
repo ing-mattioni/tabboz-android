@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
@@ -148,10 +149,22 @@ fun DialogWindowView(dlg: Dlg, isTop: Boolean) {
                     DropDownMenu(
                         dlg = dlg,
                         items = menu[openMenu].items,
-                        modifier = Modifier.absoluteOffset(x, (Win98.TITLE_H + Win98.MENU_H - 1).dp),
+                        // Come in Windows: il menu parte sotto la voce, ma se uscirebbe dal bordo
+                        // destro viene spostato a sinistra (serve per il menu Help, allineato a destra).
+                        modifier = Modifier.layout { measurable, constraints ->
+                            val placeable = measurable.measure(constraints.copy(minWidth = 0, minHeight = 0))
+                            val xPx = x.roundToPx()
+                                .coerceAtMost(constraints.maxWidth - placeable.width)
+                                .coerceAtLeast(0)
+                            val yPx = (Win98.TITLE_H + Win98.MENU_H - 1).dp.roundToPx()
+                            layout(constraints.maxWidth, constraints.maxHeight) {
+                                placeable.place(xPx, yPx)
+                            }
+                        },
                         onSelect = { id ->
                             openMenu = -1
-                            dlg.postMessage(WM_COMMAND, id, 0)
+                            if (id == Engine.PRIVACY_MENU_ID) Engine.openPrivacyPolicy()
+                            else dlg.postMessage(WM_COMMAND, id, 0)
                         },
                     )
                 }
